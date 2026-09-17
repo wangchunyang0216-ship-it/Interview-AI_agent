@@ -1,16 +1,23 @@
 import { useState } from 'react';
 import type { KeyboardEvent } from 'react';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, Square } from 'lucide-react';
 import styles from './InputArea.module.css';
 
 interface InputAreaProps {
   onSend: (text: string) => void;
+  streaming: boolean;
+  onStop: () => void;
 }
 
-export default function InputArea({ onSend }: InputAreaProps) {
+export default function InputArea({
+  onSend,
+  streaming,
+  onStop,
+}: InputAreaProps) {
   const [value, setValue] = useState('');
 
   const handleSend = () => {
+    if (streaming) return;
     const text = value.trim();
     if (!text) return;
     onSend(text);
@@ -35,14 +42,25 @@ export default function InputArea({ onSend }: InputAreaProps) {
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        <button
-          className={styles.sendBtn}
-          onClick={handleSend}
-          disabled={!value.trim()}
-          aria-label="发送"
-        >
-          <ArrowUp size={18} />
-        </button>
+        {streaming ? (
+          <button
+            className={styles.stopBtn}
+            onClick={onStop}
+            aria-label="停止生成"
+          >
+            <Square size={14} />
+            停止
+          </button>
+        ) : (
+          <button
+            className={styles.sendBtn}
+            onClick={handleSend}
+            disabled={!value.trim()}
+            aria-label="发送"
+          >
+            <ArrowUp size={18} />
+          </button>
+        )}
       </div>
       <p className={styles.hint}>AI 生成内容仅供参考</p>
     </div>

@@ -77,3 +77,52 @@
     opacity: 1;
   }
 }
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: blink 0.9s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.errorText {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--danger);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.retryBtn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+.retryBtn:hover {
+  background: #f3f4f6;
+}

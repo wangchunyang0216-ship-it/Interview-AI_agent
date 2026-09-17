@@ -62,6 +62,24 @@
   transform: translateY(-1px);
 }
 
+.stopBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--text-primary);
+  color: #fff;
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.stopBtn:hover {
+  background: #111827;
+}
+
 .hint {
   max-width: 768px;
   margin: 8px auto 0;

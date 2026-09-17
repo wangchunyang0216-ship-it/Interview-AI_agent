@@ -1,19 +1,30 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import type { ChatMessage, ChatSession } from '../types';
-import { createId, initialSessions, matchReply, sleep } from '../data/mock';
+import { createId, initialSessions, sleep, streamReply } from '../data/mock';
 
 /**
  * 会话状态管理：
  * - 维护会话列表与当前激活会话
- * - 提供新建 / 切换 / 删除会话能力
- * - 发送消息：追加用户消息 + AI 回复（S4 升级为流式输出）
+ * - 新建 / 切换 / 删除会话
+ * - 发送消息 + 流式输出（打字机效果）、停止生成、失败重试
  */
 export function useChat() {
   const [sessions, setSessions] = useState<ChatSession[]>(initialSessions);
   const [activeId, setActiveId] = useState<string>(initialSessions[0].id);
 
+  // 流式生成令牌：每次生成递增，用于让旧生成任务失效（停止/打断）
+  const generationRef = useRef(0);
+
   const activeSession =
     sessions.find((s) => s.id === activeId) ?? sessions[0];
+
+  const isStreaming = useMemo(
+    () =>
+      activeSession.messages.some(
+        (m) => m.status === 'pending' || m.status === 'streaming',
+      ),
+    [activeSession.messages],
+  );
 
   const updateMessage = useCallback(
     (
@@ -32,6 +43,23 @@ export function useChat() {
             updatedAt: Date.now(),
           };
         }),
+      );
+    },
+    [],
+  );
+
+  const removeMessage = useCallback(
+    (sessionId: string, messageId: string) => {
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === sessionId
+            ? {
+                ...s,
+                messages: s.messages.filter((m) => m.id !== messageId),
+                updatedAt: Date.now(),
+              }
+            : s,
+        ),
       );
     },
     [],
@@ -74,8 +102,61 @@ export function useChat() {
     [sessions, activeId],
   );
 
+  /** 执行一次流式回复（思考延迟 → 打字机输出 / 失败） */
+  const runStream = useCallback(
+    async (sessionId: string, messageId: string, userContent: string) => {
+      const gen = ++generationRef.current;
+
+      // 预留约 300ms 的「思考中」延迟
+      await sleep(300);
+
+      // 思考阶段被停止 / 打断：移除占位消息
+      if (generationRef.current !== gen) {
+        removeMessage(sessionId, messageId);
+        return;
+      }
+
+      // 模拟发送失败：包含 error 关键词时进入错误状态
+      if (userContent.toLowerCase().includes('error')) {
+        updateMessage(sessionId, messageId, (m) => ({
+          ...m,
+          content: '抱歉，服务暂时不可用，请稍后重试。',
+          status: 'error',
+        }));
+        return;
+      }
+
+      updateMessage(sessionId, messageId, (m) => ({
+        ...m,
+        status: 'streaming',
+      }));
+
+      let acc = '';
+      for await (const chunk of streamReply(userContent)) {
+        if (generationRef.current !== gen) {
+          // 被停止：保留已输出内容
+          updateMessage(sessionId, messageId, (m) => ({
+            ...m,
+            status: 'done',
+          }));
+          return;
+        }
+        acc += chunk;
+        updateMessage(sessionId, messageId, (m) => ({ ...m, content: acc }));
+      }
+
+      if (generationRef.current === gen) {
+        updateMessage(sessionId, messageId, (m) => ({
+          ...m,
+          status: 'done',
+        }));
+      }
+    },
+    [updateMessage, removeMessage],
+  );
+
   const sendMessage = useCallback(
-    async (text: string) => {
+    (text: string) => {
       const content = text.trim();
       if (!content) return;
 
@@ -109,25 +190,48 @@ export function useChat() {
         }),
       );
 
-      // 模拟「思考中」延迟后一次性返回
-      await sleep(500);
-      const reply = matchReply(content);
-      updateMessage(sessionId, assistantMessage.id, (m) => ({
-        ...m,
-        content: reply,
-        status: 'done',
-      }));
+      void runStream(sessionId, assistantMessage.id, content);
     },
-    [activeSession.id, updateMessage],
+    [activeSession.id, runStream],
+  );
+
+  const stopGenerating = useCallback(() => {
+    generationRef.current += 1;
+  }, []);
+
+  const retry = useCallback(
+    (messageId: string) => {
+      const session = sessions.find((s) => s.id === activeId);
+      if (!session) return;
+      const idx = session.messages.findIndex((m) => m.id === messageId);
+      if (idx === -1) return;
+
+      const userMessage = session.messages
+        .slice(0, idx)
+        .reverse()
+        .find((m) => m.role === 'user');
+      if (!userMessage) return;
+
+      updateMessage(activeId, messageId, (m) => ({
+        ...m,
+        status: 'pending',
+        content: '',
+      }));
+      void runStream(activeId, messageId, userMessage.content);
+    },
+    [sessions, activeId, updateMessage, runStream],
   );
 
   return {
     sessions,
     activeSession,
     activeId,
+    isStreaming,
     createSession,
     switchSession,
     deleteSession,
     sendMessage,
+    stopGenerating,
+    retry,
   };
 }

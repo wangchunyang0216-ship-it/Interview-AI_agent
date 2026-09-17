@@ -9,10 +9,13 @@ function App() {
     sessions,
     activeSession,
     activeId,
+    isStreaming,
     createSession,
     switchSession,
     deleteSession,
     sendMessage,
+    stopGenerating,
+    retry,
   } = useChat();
 
   return (
@@ -25,8 +28,12 @@ function App() {
         onDelete={deleteSession}
       />
       <main className={styles.main}>
-        <ChatArea session={activeSession} />
-        <InputArea onSend={sendMessage} />
+        <ChatArea session={activeSession} onRetry={retry} />
+        <InputArea
+          onSend={sendMessage}
+          streaming={isStreaming}
+          onStop={stopGenerating}
+        />
       </main>
     </div>
   );
