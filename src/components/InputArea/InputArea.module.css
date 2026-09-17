@@ -1,0 +1,71 @@
+.inputArea {
+  padding: 16px 24px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--chat-bg);
+}
+
+.inputBox {
+  max-width: 768px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 10px 10px 10px 16px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.inputBox:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  font-size: 15px;
+  line-height: 1.5;
+  max-height: 160px;
+  color: var(--text-primary);
+  font-family: inherit;
+}
+
+.textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.sendBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--user-gradient);
+  color: #fff;
+  flex-shrink: 0;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.sendBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sendBtn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.hint {
+  max-width: 768px;
+  margin: 8px auto 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}

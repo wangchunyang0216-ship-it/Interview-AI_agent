@@ -1,0 +1,42 @@
+.chatArea {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--chat-bg);
+}
+
+.messages {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.userMsg {
+  align-self: flex-end;
+  max-width: 75%;
+  padding: 10px 16px;
+  border-radius: 16px;
+  border-bottom-right-radius: 4px;
+  background: var(--user-gradient);
+  color: #fff;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.aiMsg {
+  align-self: flex-start;
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 15px;
+  line-height: 1.6;
+}
