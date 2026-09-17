@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { ArrowUp, Square } from 'lucide-react';
 import styles from './InputArea.module.css';
@@ -15,6 +15,15 @@ export default function InputArea({
   onStop,
 }: InputAreaProps) {
   const [value, setValue] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // 随内容自动增高（Shift + Enter 换行时展开）
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
+  }, [value]);
 
   const handleSend = () => {
     if (streaming) return;
@@ -35,6 +44,7 @@ export default function InputArea({
     <div className={styles.inputArea}>
       <div className={styles.inputBox}>
         <textarea
+          ref={textareaRef}
           className={styles.textarea}
           placeholder="输入消息，Enter 发送，Shift + Enter 换行"
           rows={1}

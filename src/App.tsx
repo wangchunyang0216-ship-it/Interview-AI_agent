@@ -1,5 +1,6 @@
 import Sidebar from './components/Sidebar/Sidebar';
 import ChatArea from './components/ChatArea/ChatArea';
+import EmptyState from './components/EmptyState/EmptyState';
 import InputArea from './components/InputArea/InputArea';
 import { useChat } from './hooks/useChat';
 import styles from './App.module.css';
@@ -28,7 +29,11 @@ function App() {
         onDelete={deleteSession}
       />
       <main className={styles.main}>
-        <ChatArea session={activeSession} onRetry={retry} />
+        {activeSession.messages.length === 0 ? (
+          <EmptyState onQuickAsk={sendMessage} />
+        ) : (
+          <ChatArea session={activeSession} onRetry={retry} />
+        )}
         <InputArea
           onSend={sendMessage}
           streaming={isStreaming}
