@@ -5,9 +5,9 @@
   --sidebar-text: #ececf1;
   --sidebar-muted: #9ca3af;
 
-  --accent: #6366f1;
-  --accent-strong: #4f46e5;
-  --accent-soft: #eef2ff;
+  --accent: #171717;
+  --accent-strong: #171717;
+  --accent-soft: #f3f3f3;
 
   --chat-bg: #ffffff;
   --card-bg: #f9fafb;
@@ -71,8 +71,8 @@ button {
 
 /* Markdown 渲染样式（作用于 ReactMarkdown 输出） */
 .markdown {
-  line-height: 1.75;
-  font-size: 15px;
+  line-height: 1.85;
+  font-size: 16px;
   word-break: break-word;
 }
 
@@ -98,7 +98,7 @@ button {
 }
 
 .markdown h1 {
-  font-size: 1.4em;
+  font-size: 1.55em;
 }
 
 .markdown h2 {

@@ -1,47 +1,11 @@
-import {
-  Sparkles,
-  Layers,
-  Zap,
-  Code2,
-  MessageSquareText,
-} from 'lucide-react';
 import styles from './EmptyState.module.css';
-
-interface EmptyStateProps {
-  onQuickAsk: (question: string) => void;
-}
-
-const quickQuestions = [
-  { icon: Layers, text: 'React 组件应该怎么拆分？' },
-  { icon: Zap, text: '前端性能优化有哪些思路？' },
-  { icon: Code2, text: 'TypeScript 泛型怎么用？' },
-  { icon: MessageSquareText, text: 'Vue 3 和 React 有什么区别？' },
-];
-
+interface EmptyStateProps { onQuickAsk: (question: string) => void; }
+const quickQuestions = ['请帮我做一次前端模拟面试', '根据岗位描述生成面试题', '如何准备系统设计面试？', '帮我优化这段自我介绍'];
 export default function EmptyState({ onQuickAsk }: EmptyStateProps) {
-  return (
-    <div className={styles.empty}>
-      <div className={styles.greeting}>
-        <div className={styles.logo}>
-          <Sparkles size={28} />
-        </div>
-        <h1>你好，我是你的 AI 助手</h1>
-        <p>可以帮你解答前端开发、架构设计等问题</p>
-      </div>
-
-      <div className={styles.cards}>
-        {quickQuestions.map((q) => (
-          <button
-            key={q.text}
-            className={styles.card}
-            onClick={() => onQuickAsk(q.text)}
-            type="button"
-          >
-            <q.icon size={18} className={styles.cardIcon} />
-            <span>{q.text}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
+  return <div className={styles.empty}><div className={styles.content}>
+    <h1>有什么我能帮你的吗？</h1>
+    <div className={styles.switcher}><button className={styles.active}>对话</button><button>工作</button></div>
+    <p className={styles.label}>为你推荐</p>
+    <div className={styles.questions}>{quickQuestions.map(question => <button key={question} onClick={() => onQuickAsk(question)} type="button">{question}</button>)}</div>
+  </div></div>;
 }
