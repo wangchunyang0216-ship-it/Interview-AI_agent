@@ -1,0 +1,54 @@
+.codeBlock {
+  margin: 12px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #2d2d3a;
+  background: #1e1e2e;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #2a2a38;
+  border-bottom: 1px solid #2d2d3a;
+}
+
+.lang {
+  font-size: 12px;
+  color: #9ca3af;
+  font-family: 'SF Mono', Consolas, monospace;
+  text-transform: lowercase;
+}
+
+.copyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #d1d5db;
+  transition: background 0.15s, color 0.15s;
+}
+
+.copyBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.pre {
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  background: #1e1e2e;
+}
+
+.pre code {
+  font-family: 'SF Mono', 'Fira Code', Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #e5e7eb;
+  white-space: pre;
+}

@@ -12,6 +12,7 @@ function App() {
     createSession,
     switchSession,
     deleteSession,
+    sendMessage,
   } = useChat();
 
   return (
@@ -25,7 +26,7 @@ function App() {
       />
       <main className={styles.main}>
         <ChatArea session={activeSession} />
-        <InputArea />
+        <InputArea onSend={sendMessage} />
       </main>
     </div>
   );

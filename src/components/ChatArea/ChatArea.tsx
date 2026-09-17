@@ -1,4 +1,5 @@
 import type { ChatSession } from '../../types';
+import MessageItem from '../Message/MessageItem';
 import styles from './ChatArea.module.css';
 
 interface ChatAreaProps {
@@ -10,14 +11,7 @@ export default function ChatArea({ session }: ChatAreaProps) {
     <div className={styles.chatArea}>
       <div className={styles.messages}>
         {session.messages.map((message) => (
-          <div
-            key={message.id}
-            className={
-              message.role === 'user' ? styles.userMsg : styles.aiMsg
-            }
-          >
-            {message.content}
-          </div>
+          <MessageItem key={message.id} message={message} />
         ))}
       </div>
     </div>
